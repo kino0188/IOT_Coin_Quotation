@@ -55,13 +55,9 @@ unsigned int unIPD_id;
 u08 test_string[]                 = "AT+CWMODE=1\r\n";
 u08 test_string_cwlap[]           = "AT+CWLAP\r\n";
 u08 test_string_cwjap[]           = "AT+CWJAP=\"Kino0188\",\"abcdefg11\"\r\n";
-// hellow hell
 u08 test_string_cifsr[]           = "AT+CIFSR\r\n";
 u08 test_string_send_stop[]       = "AT+CIPCLOSE=1\r\n";
-//u08 test_string_send_cipstart[]   = "AT+CIPSTART=0,\"TCP\",\"40.115.22.134\",80\r\n";
 u08 test_string_send_cipstart[]   = "AT+CIPSTART=\"TCP\",\"crix-api-endpoint.upbit.com\",80\r\n";
-
-// AT+CIPSTART="TCP","192.168.3.116",8080//
 u08 test_string_cmd_webserver1[]  = "GET /reset HTTP/1.1\r\n";
 u08 test_string_cmd_webserver2[]  = "Host: cse.dmu.ac.uk\r\n\r\n";
 u08 test_string_send5[150]          = "GET /v1/crix/candles/minutes/240?code=CRIX.UPBIT.KRW-BTC HTTP/1.1\r\nHost: crix-api-endpoint.upbit.com\r\nConnection: close\r\n\r\n";
@@ -198,31 +194,10 @@ int main(void)
   ESP_Status_Kino.ucLink_State = 0;
 
   HAL_UART_Transmit(&huart1," Kino ESP Wireless Program.. \r\n",100, 1000); 
-  
-
-  /*
-  HAL_UART_Transmit(&huart2,"AT+RST", 10, 100); 
-  
-  HAL_Delay(100);
-  
-  HAL_UART_Transmit(&huart2,test_string, sizeof(test_string), 100); 
-  
-  HAL_Delay(100);
-
-  HAL_UART_Transmit(&huart2,test_string_cifsr, sizeof(test_string_cifsr), 100); 
-  
-  HAL_Delay(100);
-  
-  */
-
   HAL_UART_Transmit(&huart2,test_string_atclpmux, sizeof(test_string_atclpmux), 100); 
   
   HAL_Delay(100);
 
- // HAL_UART_Transmit(&huart2,test_string_clpserver, sizeof(test_string_clpserver), 100); 
- // HAL_Delay(100);
- 
-  
   /* Create the thread(s) */
   /* definition and creation of defaultTask */
   osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 128);
@@ -422,16 +397,12 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)            //After Uart 
        }
        if(buf2 == 'F')
        {
-          //HAL_UART_Transmit(&huart2,test_string_clpserver, sizeof(test_string_clpserver), 100); 
-         HAL_UART_Transmit(&huart2,test_string_send_cipstart, sizeof(test_string_send_cipstart), 100);  
+          HAL_UART_Transmit(&huart2,test_string_send_cipstart, sizeof(test_string_send_cipstart), 100);  
           ESP_Status_Kino.switchkey2 = 0;
           ESP_Status_Kino.switchkey = 0;
        }
        if(buf2 == '1')
        {
-           //sprintf(ucDebugString, "AT+CIPSEND=0,133\r\n");
-           //send_msg2(ucDebugString); 
-           
            HAL_UART_Transmit(&huart2,"AT+CIPSEND=0,66\r\n", 17, 100); 
        }
        if(buf2 == '2')
@@ -470,47 +441,7 @@ void make_msg(u08 *msg)
 {
       memset(msg, 0, sizeof(msg)); 
       
-
-     // make_html(msg, "GET /data/price?fsym=BTC&tsyms=KRW HTTP/1.1\r\n");
-      //GET /data/2.5/weather?q=Dortmund HTTP/1.0
-      //Host: api.openweathermap.org
-      
-//      make_html(msg, "\nGET / HTTP/1.1\r\nHost: api.openweathermap.org\r\nContent-Type: text/html\r\nConnection: close\r\n\r\n");
-      
-      
-      //make_html(msg, "GET /v1/bpi/currentprice.json HTTP/1.1\r\nHost: api.coindesk.com\r\nContent-Type: application/json\r\nConnection: close\r\nUser-Agent: test\r\n\r\n");
       make_html(msg, "GET /v1/bpi/currentprice.json HTTP/1.1\r\nHost: api.coindesk.com\r\n\r\n");
-      
-      //make_html(msg, "Connection: close\r\n");
-      //make_html(msg, "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\n");
-      //make_html(msg, "Content-Type: text/html\r\n");
-      //make_html(msg, "User-Agent: Mozilla/4.0 (compatible; esp8266 Lua; Windows NT 5.1)\r\n\r\n");
-      
-        //.. "Connection: close\r\n"
-        //.. "Accept: */*\r\n"
-        //.. "User-Agent: Mozilla/4.0 (compatible; esp8266 Lua; Windows NT 5.1)\r\n"
-        //.. "\r\n")
-      
-      /*
-      make_html(msg, "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nConnection: close\r\n\r\n<!DOCTYPE HTML>\r\n<html>");
-      make_html(msg, "<head><title>ESP8266 LED Control</title></head>");
-      make_html(msg, "<body>");
-      if(ESP_Status_Kino.ucLight_State == 'O')
-      {
-        make_html(msg, "<h>ESP8266 LED Control - ON</h></br></br>");
-        make_html(msg, "<img alt=\"555.jpg\" src=\"https://i.imgur.com/BXM82qg.jpg\" width=\"200\" height=\"300\" />");
-      }
-      if(ESP_Status_Kino.ucLight_State == 'X')
-      {
-        make_html(msg, "<h>ESP8266 LED Control - OFF</h></br></br>");
-        make_html(msg, "<img alt=\"555.jpg\" src=\"https://i.imgur.com/F3mjhIz.jpg\" width=\"200\" height=\"300\"/>");
-      }
-      
-      make_html(msg, "<br><input type=\"button\" name=\"b1\" value=\"Turn LED ON\" onclick=\"location.href=',LON'\">");
-      make_html(msg, "<input type=\"button\" name=\"b1\" value=\"Turn LED OFF\" onclick=\"location.href=',LOFF'\">");
-      make_html(msg, "</body>");
-      make_html(msg, "</html>\n");
-      */
 }
 
 void Eliminate(u08 *str, u08 ch)
@@ -811,7 +742,6 @@ void TCP_ReceiceData()
       }  
       if((chTcp_Cmd[nCmd_Count_tail] == 'j'))
       {
-              //ESP_Status_Kino.switchkey2 = 4;
               nCmd_Count_tail++;
       }  
       if((chTcp_Cmd[nCmd_Count_tail] == 'h'))
